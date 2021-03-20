@@ -20,6 +20,7 @@ namespace TelegramBot
         {
             telegramMessages.Add(message);
         }
+
         public List<string> GetTextMessages()
         {
             var textMessages = new List<string>();
@@ -36,5 +37,7 @@ namespace TelegramBot
         }
 
         public long GetId() => telegramChat.Id;
+
+        public string GetLastMessage() => telegramMessages[telegramMessages.Count - 1].Text;
     }
 }

@@ -10,13 +10,11 @@ namespace TelegramBot
     {
         private Messenger messenger;
         private Dictionary<long, Conversation> chatList;
-        private ITelegramBotClient botClient;
 
         public BotMessageLogic(ITelegramBotClient botClient)
         {
-            messenger = new Messenger();
+            messenger = new Messenger(botClient);
             chatList = new Dictionary<long, Conversation>();
-            this.botClient = botClient;
         }
 
         public async Task Response(MessageEventArgs e)
@@ -34,15 +32,7 @@ namespace TelegramBot
 
             chat.AddMessage(e.Message);
 
-            await SendTextMessage(chat);
-        }
-
-        private async Task SendTextMessage(Conversation chat)
-        {
-            var text = messenger.CreateTextMessage(chat);
-
-            await botClient.SendTextMessageAsync(
-            chatId: chat.GetId(), text: text);
+            await messenger.MakeAnswer(chat);
         }
     }
 }
