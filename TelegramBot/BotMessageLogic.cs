@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Telegram.Bot;
+using Telegram.Bot.Types;
 using Telegram.Bot.Args;
 
 namespace TelegramBot
@@ -17,22 +18,32 @@ namespace TelegramBot
             chatList = new Dictionary<long, Conversation>();
         }
 
-        public async Task Response(MessageEventArgs e)
+        private Conversation CheckChat(Chat chat)
         {
-            var Id = e.Message.Chat.Id;
-
-            if (!chatList.ContainsKey(Id))
+            if (!chatList.ContainsKey(chat.Id))
             {
-                var newchat = new Conversation(e.Message.Chat);
+                var newchat = new Conversation(chat);
 
-                chatList.Add(Id, newchat);
+                chatList.Add(chat.Id, newchat);
             }
 
-            var chat = chatList[Id];
+            return chatList[chat.Id];
+        }
+
+        public async Task ResponseText(MessageEventArgs e)
+        {
+            var chat = CheckChat(e.Message.Chat);
 
             chat.AddMessage(e.Message);
 
-            await messenger.MakeAnswer(chat);
+            await messenger.MakeAnswerOnCommand(chat);
+        }
+
+        public async Task ResponseInline(CallbackQueryEventArgs e)
+        {
+            var chat = CheckChat(e.CallbackQuery.Message.Chat);
+
+            await messenger.MakeAnswerOnInline(chat, e.CallbackQuery.Data, e.CallbackQuery.Id);
         }
     }
 }

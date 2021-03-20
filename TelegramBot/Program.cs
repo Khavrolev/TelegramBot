@@ -1,12 +1,10 @@
 ﻿using System;
-using Telegram.Bot;
-using Telegram.Bot.Args;
 
 namespace TelegramBot
 {
     class Program
     {
-        
+
         static void Main(string[] args)
         {
             var bot = new BotWorker();

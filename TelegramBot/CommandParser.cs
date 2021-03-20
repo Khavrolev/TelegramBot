@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TelegramBot
 {
@@ -20,6 +17,12 @@ namespace TelegramBot
         {
             Command.Add(new SayHiCommand());
             Command.Add(new AskMeCommand());
+            Command.Add(new PoemButtonCommand());
+        }
+
+        public IChatCommand GetCommand(string message)
+        {
+            return Command.Find(x => x.CheckMessage(message));
         }
 
         public bool IsMessageCommand(string message)
@@ -36,9 +39,11 @@ namespace TelegramBot
             return command is IChatTextCommand;
         }
 
-        public IChatCommand GetCommand(string message)
+        public bool IsInlineCommand(string message)
         {
-            return Command.Find(x => x.CheckMessage(message));
+            var command = GetCommand(message);
+
+            return command is IChatInlineCommand;
         }
     }
 }

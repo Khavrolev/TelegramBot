@@ -18,6 +18,7 @@ namespace TelegramBot
         public void Start()
         {
             botClient.OnMessage += Bot_OnMessage;
+            botClient.OnCallbackQuery += Bot_Callback;
             botClient.StartReceiving();
         }
 
@@ -30,7 +31,15 @@ namespace TelegramBot
         {
             if (e.Message.Text != null)
             {
-                await logic.Response(e);
+                await logic.ResponseText(e);
+            }
+        }
+
+        private async void Bot_Callback(object sender, CallbackQueryEventArgs e)
+        {
+            if (e.CallbackQuery.Data != null)
+            {
+                await logic.ResponseInline(e);
             }
         }
     }
